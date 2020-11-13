@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 import json
 
-from .models import Proveedor
+from .models import Proveedor, VentasEnc, VentasDet
 from vnt.forms import ProveedorForm
 
 class ProveedorView(LoginRequiredMixin, generic.ListView):
@@ -64,6 +64,15 @@ def proveedorInactivar(request, id):
         return HttpResponse('Proveedor Inactivado')
 
     return render(request, template_name, contexto)
+
+
+class VentasView(LoginRequiredMixin, generic.ListView):
+    model = VentasEnc
+    template_name = 'vnt/ventas_list.html'
+    context_object_name = 'obj'
+    permission_required='vnt.view_ventasenc'
+
+
 
 
 # Create your views here.

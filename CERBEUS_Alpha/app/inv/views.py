@@ -208,36 +208,60 @@ class UMEdit(LoginRequiredMixin, generic.UpdateView):
 
 class ProductoView(LoginRequiredMixin, generic.ListView):
     model = Producto
-    template_name = "inv/producto_list.html"
-    context_object_name = 'obj'
+    template_name = "inv/prducto_list.html"
+    context_object_name = "obj"
+    permission_required="inv.view_producto"
     login_url = 'basescerbeus:login'
-    
 
-
-class ProductoNew(LoginRequiredMixin, generic.CreateView):
-    model = Producto
-    template_name = "inv/producto_form.html"
+class ProductoNew(SuccessMessageMixin,LoginRequiredMixin,
+                   generic.CreateView):
+    model=Producto
+    template_name="inv/producto_form.html"
     context_object_name = 'obj'
-    form_class = ProductoForm
-    success_url = reverse_lazy("inv_producto_list")
+    form_class=ProductoForm
+    success_url= reverse_lazy("inv:producto_list")
+    success_message="Producto Creado"
+    permission_required="inv.add_producto"
     login_url = 'basescerbeus:login'
 
     def form_valid(self, form):
         form.instance.uc = self.request.user
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProductoNew, self).get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.all()
+        context["subcategorias"] = SubCategoria.objects.all()
+        return context
 
 
-class ProductoEdit(LoginRequiredMixin, generic.UpdateView):
-    model = Producto
-    template_name = "inv/producto_form.html"
+
+class ProductoEdit(SuccessMessageMixin,LoginRequiredMixin,
+                   generic.UpdateView):
+    model=Producto
+    template_name="inv/producto_form.html"
     context_object_name = 'obj'
-    form_class = ProductoForm
-    succes_url = reverse_lazy("inv:producto_list.html")
+    form_class=ProductoForm
+    success_url= reverse_lazy("inv:producto_list")
+    success_message="Producto Editado"
+    permission_required="inv.change_producto"
     login_url = 'basescerbeus:login'
-
+    
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
+
+        context = super(ProductoEdit, self).get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.all()
+        context["subcategorias"] = SubCategoria.objects.all()
+        context["obj"] = Producto.objects.filter(pk=pk).first()
+
+        return context
+
+
 
 
 # Create your views here.

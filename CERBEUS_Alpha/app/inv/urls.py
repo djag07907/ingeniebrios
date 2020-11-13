@@ -5,7 +5,7 @@ CategoriaDel,  \
     SubCategoriaView, SubCategoriaNew, SubCategoriaEdit, SubCategoriaDel, \
         MarcaView, MarcaNew, MarcaEdit, \
             UMView, UMNew, UMEdit, \
-                ProductoNew, ProductoView, ProductoEdit
+                ProductoView, ProductoNew, ProductoEdit
 
 urlpatterns = [
     path('categorias/',CategoriaView.as_view(), name = 'categoria_list'),
@@ -31,5 +31,5 @@ urlpatterns = [
     path('productos/',ProductoView.as_view(), name="producto_list"),
     path('productos/new',ProductoNew.as_view(), name="producto_new"),
     path('productos/edit/<int:pk>',ProductoEdit.as_view(), name="producto_edit"),
-   #path('productos/inactivar/<int:id>',producto_inactivar, name="producto_inactivar"),
+    #path('productos/inactivar/<int:id>',producto_inactivar, name="producto_inactivar"),
 ]

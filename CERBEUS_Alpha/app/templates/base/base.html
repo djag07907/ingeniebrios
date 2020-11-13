@@ -52,8 +52,8 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'basescerbeus:home' %}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    
+                    <span>Inicio</span></a>
             </li>
 
             <!-- Divider -->
@@ -90,14 +90,25 @@
                         <a class="collapse-item" href="{% url 'inv:producto_list' %}">Productos</a>
                         {% endif %}
                         
-                        <h6 class="collapse-header">Catálogos de Compras:</h6>
+                        <h6 class="collapse-header">Catálogos de Ventas:</h6>
                         {% if perms.vnt.view_proveedor %}
                         <a class="collapse-item" href="{% url 'vnt:proveedor_list' %}">Proveedores</a>
                         {% endif %}
                     </div>
                 </div>
             </li>
-
+            <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVentas" aria-expanded="true" aria-controls="collapseVentas">
+          <i class="fas fa-fw fa-truck"></i>
+          <span>Movimientos</span>
+        </a>
+        <div id="collapseVentas" class="collapse {% if vnt_url in request.path  %} show {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Entradas</h6>
+            <a class="collapse-item {% if vnt_url in request.path  %} active {% endif %}" href="{% url 'vnt:ventas_list' %}">Ventas</a>
+          </div>
+        </div>
+      </li>
             <!-- Nav Item - Utilities Collapse Menu 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
@@ -438,55 +449,68 @@
     <!-- Page level plugins -->
     <script src="{% static 'base/vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'base/vendor/jquery-confirm/jquery-confirm.min.css' %}"></script>
-
-    <!---JS PREPARACION DE VENTANA MODAL -->
+    
+    
 
     {% block control_modal%}
     <script>
-        function abrir_modal(url) {
-
-            $("#popup").load(url, function () {
-                $(this).modal({
-                    backdrop: 'static',
-                    keyboard: false
-                })
-                $(this).modal('show');
-            });
-            return false;
-        }
-
-        function cerrar_modal() {
-            $('#popup').modal('hide');
-            return false;
-        }
-
-        function mensaje(msg, color = 'green') {
-            if (color == "success") {
-                color = "green";
-            }
-            if (color == "error") {
-                color = "red";
-            }
-
-            $.alert({
-                title: '',
-                theme: 'material',
-                type: color,
-                content: msg
-            });
-        } { %
-            if messages %
-        } { %
-            for message in messages %
-        }
-        // console.log("{{ message.tags }}");
-        mensaje("{{ message }}", "{{ message.tags }}"); { % endfor %
-        } { % endif %
-        }
+        $(document).ready(function () {
+          jQuery.datetimepicker.setLocale('es');
+        });
     </script>
-    {% endblock %} {% block js_page %} {% endblock %}
-
+    
+      
+      <script>
+        function abrir_modal(url)
+        {
+    
+          $("#popup").load(url, function(){
+            $(this).modal({
+              backdrop:'static',
+              keyboard: false
+            })
+            $(this).modal('show');
+          });
+          return false;
+        }
+    
+        function cerrar_modal()
+        {
+          $('#popup').modal('hide');
+          return false;
+        }
+    
+        function mensaje(msg,color='green')
+        {
+          if (color=="success")
+          {
+            color="green";
+          }
+          if (color=="error")
+          {
+            color="red";
+          }
+    
+    
+          $.alert({
+            title:'',
+            theme:'material',
+            type:color,
+            content:msg
+          });
+        }
+    
+        {% if messages %}
+          {% for message in messages %}
+            console.log("{{ message.tags }}");
+            mensaje("{{ message }}","{{ message.tags }}");
+          {% endfor %}
+        {% endif %}
+    
+      </script>
+    {% endblock %}
+      
+    {% block js_page %} {% endblock %}
 </body>
 
 </html>

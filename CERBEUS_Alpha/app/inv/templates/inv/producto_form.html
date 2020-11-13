@@ -121,3 +121,11 @@
     </div>
 </div>
 
+<script>
+    $(function() {
+        $("#id_categoria").val("{{ obj.subcategoria.categoria.id }}").change();
+        $("#id_subcategoria").val("{{ obj.subcategoria.id }}").change();
+        $("#id_subcategoria").chained("#id_categoria");
+    });
+</script>
+

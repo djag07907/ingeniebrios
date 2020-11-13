@@ -5,8 +5,8 @@ from basescerbeus.models import ClaseModelo
 class Categoria(ClaseModelo):
     descripcion = models.CharField(
         max_length=100,
-        help_text = 'Descripción de la Categoría',
-        unique=True,
+        help_text='Descripción de la Categoría',
+        unique=True
     )
 
     def __str__(self):
@@ -17,7 +17,8 @@ class Categoria(ClaseModelo):
         super(Categoria, self).save()
 
     class Meta:
-        verbose_name_plural= "Categorías"
+        verbose_name_plural= "Categorias"
+
 
 class SubCategoria(ClaseModelo):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
@@ -53,25 +54,25 @@ class Marca(ClaseModelo):
         super(Marca, self).save()
 
     class Meta:
-        verbose_name_plural = "Marcas"
+        verbose_name_plural = "Marca"
 
 
 class UnidadMedida(ClaseModelo):
     descripcion = models.CharField(
         max_length=100,
-        help_text='Descripción de la Unidad de Medida',
+        help_text='Descripción de la Unidad Medida',
         unique=True
     )
 
     def __str__(self):
-        return'{}'.format(self.descripcion)
+        return '{}'.format(self.descripcion)
 
     def save(self):
         self.descripcion = self.descripcion.upper()
         super(UnidadMedida, self).save()
 
     class Meta:
-        verbose_name_plural = 'Unidad de Medida'
+        verbose_name_plural = "Unidades de Medida"
 
 
 class Producto(ClaseModelo):
@@ -99,14 +100,4 @@ class Producto(ClaseModelo):
     class Meta:
         verbose_name_plural = "Productos"
         unique_together = ('codigo','codigo_barra')
-
-
-
-
-
-
-
-
-
-        
 # Create your models here.
