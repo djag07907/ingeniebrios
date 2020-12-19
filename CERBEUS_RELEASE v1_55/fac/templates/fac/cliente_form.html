@@ -1,0 +1,140 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        {% if obj %}
+        <form role="form" action="{% url 'fac:cliente_edit' obj.pk %}" method="post"  class="form-inline">
+        {% else %}
+        <form role="form" action="{% url 'fac:cliente_new' %}" method="post"  class="form-inline">
+        {% endif %}
+            <div class="col-xl-12 col-md-12 mb-12">
+                {% if obj %}
+                <div class="card border-left-warning shadow h-100 py-2">
+                {% else %}
+                <div class="card border-left-success shadow h-100 py-2">
+                {% endif %}
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            {% if obj %} Editar {% else %} Nuevo {% endif %} Cliente
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.estado.label}}</div>
+                                <div class="col-md-6">{{form.estado}}</div>    
+                            </div>
+                                <div class="col-md-6">
+                                <div class="col-md-6">{{form.celular.label}}</div>
+                                <input type="text" name="celular" maxlength="8" class="form-control" required id="id_celular" placeholder="Ingrese teléfono"
+                                value="{% if obj %} {{ obj.celular }} {% endif %}" pattern="[2|3|7|8|9]{1}[\d]{7}" title="Ingrese un numero valido. (Empezado por 2,3,7,8 o 9 y con una longitud de 8 numeros)">
+                                
+                            </div>
+                        
+                        </div>
+                         <div class="row">
+                           <div class="col-md-6">
+                                <div class="col-md-6">{{form.apellidos.label}}</div>
+                                <input type="text" name="apellidos" maxlength="100" class="form-control" required id="id_apellidos" placeholder="Ingrese Apellidos "
+                                value="{% if obj %} {{ obj.apellidos }} {% endif %}" pattern="[a-zA-Z ]{2,100}" title="Minimo 2 Caracteres, Solo se aceptan valores alfabeticos">
+                                
+                            </div>
+                         <div class="col-md-6">
+                                <div class="col-md-6">{{form.nombres.label}}</div>
+                                <input type="text" name="nombres" maxlength="100" class="form-control" required id="id_nombre" placeholder="Ingrese Nombres"
+                                value="{% if obj %} {{ obj.nombres }} {% endif %}" pattern="[a-zA-Z ]{2,100}" title="Minimo 2 Caracteres, Solo se aceptan valores alfabeticos">
+                                
+                            </div>
+                        
+                        </div>
+                        <div class="row"> 
+                        <div class="col-md-6">
+                                <div class="col-md-6">{{form.tipo.label}}</div>
+                                <select name="tipo" maxlength="100" class="form-control" required id="id_tipo" placeholder="Tipo de persona" value="{% if obj %} {{ obj.tipo }} {% endif %}">
+                                    <option value="Natural">Natural</option>
+                                    <option value="Jurídica">Jurídica</option>
+                                </select>  
+                            </div>
+                        <!--input type="hidden" name="tipo" maxlength="100" class="form-control" required id="id_tipo" value="{% if obj %} {{ obj.tipo }} {% endif %}"-->
+                        </div>
+                        
+                        <!-- <div class="row">
+                            {{ form.as_p }}
+                        </div> -->
+                       
+                        
+                        <div class="dropdown-divider"></div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                                <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
+                                        Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-plus fa-2x text-gray-300"></i>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
+
+{% block js_page %}
+<script>
+
+function cambio(formtipo, tipo){
+    tipo = document.getElementById(tipo);
+    var idx = formtipo.selectedIndex;
+    var content = formtipo.options[idx].innerHTML;
+    if (content === 'Natural') {
+    tipo.value = 'NAT';
+    } else {
+    tipo.value = 'JUR';
+    }
+}
+
+$(function() {
+
+    var url = $("form").attr("action");
+    var token = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    $("form").submit(function(e){
+        e.preventDefault();
+        // alert(token);
+        var data = $("form").serializeArray();
+         console.log(data);
+        $.ajax({
+            url:url,
+            method:"POST",
+            headers: {'X-CSRFToken': token },
+            data: data
+        })
+        .done(function(r,textStatus,xhr){
+            if(xhr.status=200){
+                //location.reload(true);
+                //$("form").submit();
+                //window.location = "{% url 'inv:categoria_list' %}";
+                window.location = "{% url 'fac:cliente_list' %}";
+
+                //mensaje("Registro Actualizado");   
+            }
+            else{
+                window.location = "{% url 'fac:cliente_list' %}";
+                //mensaje("Registro Actualizado");             
+            }
+        }).fail(function (data) {   
+                console.log(data);
+            mensaje(data.responseText.slice(13,69));
+        });
+    });
+});
+</script>
+
+
+
+{% endblock %}

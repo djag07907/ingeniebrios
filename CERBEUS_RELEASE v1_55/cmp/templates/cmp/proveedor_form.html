@@ -1,0 +1,125 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        {% if obj %}
+        <form role="form" action="{% url 'cmp:proveedor_edit' obj.pk %}" method="post"  class="form-inline">
+        {% else %}
+        <form role="form" action="{% url 'cmp:proveedor_new' %}" method="post"  class="form-inline">
+        {% endif %}
+            <div class="col-xl-12 col-md-12 mb-12">
+                {% if obj %}
+                <div class="card border-left-warning shadow h-100 py-2">
+                {% else %}
+                <div class="card border-left-success shadow h-100 py-2">
+                {% endif %}
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            {% if obj %} Editar {% else %} Nuevo {% endif %} Proveedor
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.estado.label}}</div>
+                                <div class="col-md-6">{{form.estado}}</div>    
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.descripcion.label}}</div>
+                                <input type="text" name="descripcion" maxlength="100" class="form-control" required id="id_descripcion" placeholder="Nombre de proveedor"
+                                value="{% if obj %} {{ obj.descripcion }} {% endif %}" pattern="[a-zA-Z ]{2,100}" title="Minimo 2 Caracteres, Solo se aceptan valores alfabeticos">
+                                
+                            </div>
+                        </div>
+                         <div class="row">
+                           <div class="col-md-6">
+                                <div class="col-md-6">{{form.direccion.label}}</div>
+                                <input type="text" name="direccion" maxlength="100" class="form-control" required id="id_direccion" placeholder="Direccion del proveedor"
+                                value="{% if obj %} {{ obj.direccion }} {% endif %}" pattern="[a-zA-Z0-9\s\S\W]{2,100}" title="Minimo 2 Caracteres, Solo se aceptan valores alfabeticos y numéricos">
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.contacto.label}}</div>
+                                <input type="text" name="contacto" maxlength="100" class="form-control" required id="id_contacto" placeholder="Agente de Contacto"
+                                value="{% if obj %} {{ obj.contacto }} {% endif %}" pattern="[a-zA-Z ]{2,100}" title="Minimo 2 Caracteres, Solo se aceptan valores alfabeticos">
+                                
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.telefono.label}}</div>
+                                <input type="text" name="telefono" maxlength="8" class="form-control" required id="id_telefono" placeholder="Telefono de proveedor"
+                                value="{% if obj %} {{ obj.telefono }} {% endif %}" pattern="[2|3|7|8|9]{1}[\d]{7}" title="Ingrese un numero valido. (Empezado por 2,3,7,8 o 9 y con una longitud de 8 numeros)">
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-6">{{form.email.label}}</div>
+                                <input type="text" name="email" maxlength="100" class="form-control" required id="id_email" placeholder="Correo del proveedor"
+                                value="{% if obj %} {{ obj.email }} {% endif %}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Ingrese un correo valido. (correo@correo.com)">
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="dropdown-divider"></div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                                <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
+                                        Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-plus fa-2x text-gray-300"></i>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
+
+{% block js_page %}
+<script>
+$(function() {
+
+    var url = $("form").attr("action");
+    var token = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    $("form").submit(function(e){
+        e.preventDefault();
+        // alert(token);
+        var data = $("form").serializeArray();
+         console.log(data);
+        $.ajax({
+            url:url,
+            method:"POST",
+            headers: {'X-CSRFToken': token },
+            data: data
+        })
+        .done(function(r,textStatus,xhr){
+            if(xhr.status=200){
+                //location.reload(true);
+                //$("form").submit();
+                //window.location = "{% url 'inv:categoria_list' %}";
+                window.location = "{% url 'cmp:proveedor_list' %}";
+
+                //mensaje("Registro Actualizado");   
+            }
+            else{
+                window.location = "{% url 'cmp:proveedor_list' %}";
+                //mensaje("Registro Actualizado");             
+            }
+        }).fail(function (data) {   
+                console.log(data);
+            mensaje(data.responseText.slice(13,69));
+        });
+    });
+});
+</script>
+
+
+
+{% endblock %}
